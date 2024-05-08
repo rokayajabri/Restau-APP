@@ -22,6 +22,9 @@ export default function Layout() {
                             <li className="nav-item">
                                 <Link className="nav-link" to="/allCategory">Category management</Link>
                             </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/allIngredient">Ingredient management</Link>
+                            </li>
     
                             <li className="nav-item">
                                 <Link className="nav-link" to="/logout">Logout</Link>

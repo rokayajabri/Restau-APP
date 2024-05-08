@@ -15,6 +15,9 @@ import AllCategorie from './components/AllCategorie';
 import AddCategory from './components/AddCategory';
 import EditCategory from './components/EditCategorie';
 import Logout from './components/Logout';
+import AllIngredient from './components/AllIngredient';
+import AddIngredient from './components/AddIngredient';
+import EditIngredient from './components/EditIngredient';
 
 function App() {
   return (
@@ -35,6 +38,9 @@ function App() {
               <Route path="allCategory" element={<AllCategorie />} />
               <Route path="addCategory" element={<AddCategory />} />
               <Route path="editCategory/:id" element={<EditCategory />} />
+              <Route path="allIngredient" element={<AllIngredient />} />
+              <Route path="addIngredient" element={<AddIngredient />} />
+              <Route path="editIngredient/:id" element={<EditIngredient />} />
               <Route path="logout" element={<Logout />} />
               {/* Insérez ici d'autres routes protégées si nécessaire */}
             </Route>

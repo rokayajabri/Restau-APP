@@ -3,6 +3,8 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\CompositionProduitController;
+use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\ProduitController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -47,5 +49,19 @@ Route::get('/show_categories/{id}', [CategorieController::class, 'show']);
 Route::put('/edit_categories/{id}', [CategorieController::class, 'update']);
 Route::delete('/delete_categories/{id}', [CategorieController::class, 'destroy']);
 Route::get('/recherche_categorie', [CategorieController::class, 'search']);
+
+//ingredients management
+Route::get('/ingredients', [IngredientController::class, 'index']);
+Route::post('/add_ingredients', [IngredientController::class, 'store']);
+Route::put('/edit_ingredients/{id}', [IngredientController::class, 'update']);
+Route::delete('/delete_ingredients/{id}', [IngredientController::class, 'destroy']);
+Route::get('/recherche_ingredient', [IngredientController::class, 'search']);
+
+
+
+
+
+
+
 
 //Route::group(['middleware'=> ['auth:sanctum']],function(){});
