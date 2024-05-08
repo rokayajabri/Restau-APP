@@ -19,13 +19,14 @@ const AllCategorie = () => {
         fetchCategories();
     }, []);
 
-    const deleteCatecorie = async (id) => {
+    const deleteCategorie = async (id) => {
         try {
             const response = await api.delete(`/api/delete_categories/${id}`);
-            if (response.status === 200) {
-                // Mettre à jour la liste des produits après la suppression
-                fetchCategories(); // Utilisation de la fonction fetchUsers ici
-                console.log('category deleted successfully');
+            if (response.status === 204) {  // Assurez-vous que le statut attendu est correct
+                // Mise à jour de l'état sans refaire une requête au serveur
+                const updatedCategories = categories.filter(category => category.id !== id);
+                setCategories(updatedCategories);
+                console.log('Category deleted successfully');
             }
         } catch (error) {
             console.error('Error deleting category:', error);
@@ -33,7 +34,7 @@ const AllCategorie = () => {
     };
     const handleDeleteConfirmation = (id) => {
         if (window.confirm('Are you sure you want to delete this category?')) {
-            deleteCatecorie(id);
+            deleteCategorie(id);  // Assurez-vous que le nom de la fonction ici est correct
         }
     };
 

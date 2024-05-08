@@ -1,7 +1,6 @@
 import React from 'react';
 import { api } from '../config/axios';
 
-
 const Logout = (props) => {
   const handleLogout = async () => {
     try {

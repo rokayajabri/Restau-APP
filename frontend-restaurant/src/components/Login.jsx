@@ -1,36 +1,37 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../config/axios';
+import { useAuth } from '../contexts/AuthContext';  // Vérifiez que le chemin est correct
 
 const Login = () => {
     const navigate = useNavigate();
-
-    // Utilisez un objet pour stocker les valeurs de l'état
+    const { login } = useAuth();
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
-
     const [errors, setErrors] = useState({});
 
     const onSubmit = async (e) => {
         e.preventDefault();
+        if (!formData.email || !formData.password) {
+            setErrors({
+                ...errors,
+                email: !formData.email ? 'Email is required' : '',
+                password: !formData.password ? 'Password is required' : '',
+            });
+            return;
+        }
+
         try {
-            await api.get('/sanctum/csrf-cookie');
-            const response = await api.post('/api/login', formData);
-            console.log(response.status);
-            if (response.status === 200) {
-                navigate("/dashboard");
-            }
+            await login(formData.email, formData.password);
+            navigate("/dashboard");
         } catch (error) {
-            console.error('Login failed:', error);
-            // Gérer les erreurs de connexion ici
-            setErrors({ server: 'Login failed. Please try again.' });
+            const errorMsg = error.response ? error.response.data.message : 'Login failed. Please try again.';
+            setErrors({ ...errors, server: errorMsg });
         }
     };
 
     const handleChange = (e) => {
-        // Mettre à jour les valeurs de l'état en fonction de l'ID de l'input
         setFormData({
             ...formData,
             [e.target.id]: e.target.value

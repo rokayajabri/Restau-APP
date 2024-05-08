@@ -55,19 +55,8 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        // Vérifie si l'utilisateur est authentifié
-        if (Auth::check()) {
-            // Supprime tous les tokens d'accès de l'utilisateur
-            $request->user()->tokens()->delete();
-
-            // Déconnexion de l'utilisateur
-            Auth::logout();
-
-            return response()->json(['message' => 'Logged out successfully']);
-        } else {
-            // L'utilisateur n'est pas authentifié
-            return response()->json(['error' => 'User not authenticated'], 401);
-        }
+        $request->user()->tokens()->delete(); // Supprime tous les jetons d'authentification de l'utilisateur
+        return response()->json(['message' => 'Déconnexion réussie']);
     }
 
 }

@@ -5,11 +5,14 @@ import { Link } from 'react-router-dom';
 const AllProduit = () => {
     const [produits, setProduits] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-
+    const [categories, setCategories] = useState([]);
+    
     const fetchProduits = async () => {
         try {
             const response = await api.get('/api/produits');
             setProduits(response.data);
+            const categoriesResponse = await api.get('/api/categories');
+            setCategories(categoriesResponse.data);
         } catch (error) {
             console.error('Error fetching products:', error);
         }
@@ -23,9 +26,10 @@ const AllProduit = () => {
     const deleteProduit = async (id) => {
         try {
             const response = await api.delete(`/api/delete_produits/${id}`);
-            if (response.status === 200) {
-                // Mettre à jour la liste des produits après la suppression
-                fetchProduits(); // Utilisation de la fonction fetchUsers ici
+            if (response.status === 204) {  // Assurez-vous que le statut attendu est correct
+                // Mise à jour de l'état sans refaire une requête au serveur
+                const updatedProduits = produits.filter(produit => produit.id !== id);
+                setProduits(updatedProduits);
                 console.log('product deleted successfully');
             }
         } catch (error) {
@@ -50,6 +54,11 @@ const AllProduit = () => {
         } catch (error) {
             console.error('Error searching for products:', error);
         }
+    };
+
+    const getCategoryName = (categoryId) => {
+        const category = categories.find(cat => cat.id === categoryId);
+        return category ? category.nom : 'Introuvable';
     };
 
     return (
@@ -78,7 +87,7 @@ const AllProduit = () => {
                             <td>{produit.nom}</td>
                             <td>{produit.description}</td>
                             <td>{produit.prix}</td>
-                            <td>{produit.categorie ? produit.categorie.nom : 'N/A'}</td>
+                            <td>{getCategoryName(produit.id_Categorie)}</td>
                             <td>
                                 <Link to={`/editProduit/${produit.id}`}>Edit</Link>
                             </td>

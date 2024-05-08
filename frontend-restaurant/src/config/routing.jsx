@@ -76,35 +76,3 @@ const routes=createBrowserRouter([
 
 export {routes}
 
-/*const Routes = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    return (
-        <BrowserRouter>
-            <Routes>
-                <Route index element={<Login setIsLoggedIn={setIsLoggedIn} />} />
-                {isLoggedIn ? (
-                    <Route path="/" element={<Layout />}>
-                        <Route path="dashboard" element={<Dashboard />} />
-                        <Route path="/allUser" element={<AllUser />} />
-                        <Route path="/AddUser" element={<AddUser />} />
-                        <Route path="/editUser/:id" element={<EditUser />} />
-
-                        <Route path="/allProduit" element={<AllProduit />} />
-                        <Route path="/addProduit" element={<AddProduit />} />
-                        <Route path="/editProduit/:id" element={<EditProduit />} />
-                        
-                        <Route path="/allCategory" element={<AllCategorie />} />
-                        <Route path="/addCategory" element={<AddCategory />} />
-                        <Route path="/editCategory/:id" element={<EditCategory />} />
-                       
-                    </Route>
-                ) : (
-                    <Navigate to="/" replace />
-                )}
-            </Routes>
-        </BrowserRouter>
-    );
-};
-
-export default Routes;*/
