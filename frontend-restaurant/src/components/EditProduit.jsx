@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../config/axios';
+
 import { useNavigate, useParams } from 'react-router-dom';
 
 const EditProduit = () => {
@@ -18,7 +18,7 @@ const EditProduit = () => {
     useEffect(() => {
         const fetchProduit = async () => {
             try {
-                const response = await api.get(`/api/produits/${id}`); 
+                const response = await fetch(`/api/produits/${id}`); 
                 const produitData = response.data;
                 setFormData({
                     nom: produitData.nom,
@@ -33,7 +33,7 @@ const EditProduit = () => {
 
         const fetchCategories = async () => {
             try {
-                const response = await api.get('/api/categories');
+                const response = await fetch('/api/categories');
                 setCategories(response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
@@ -51,7 +51,7 @@ const EditProduit = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await api.put(`/api/edit_produits/${id}`, formData); // Envoyer une requête PUT pour mettre à jour les détails du produit
+            await fetch(`/api/edit_produits/${id}`, formData); // Envoyer une requête PUT pour mettre à jour les détails du produit
             console.log('Produit mis à jour avec succès !');
             navigate("/allProduit");
         } catch (error) {

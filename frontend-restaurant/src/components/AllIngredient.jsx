@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../config/axios';
+
 import { Link } from 'react-router-dom';
 function AllIngredient() {
     const [ingredients, setIngredients] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     useEffect(() => {
-        api.get('/api/ingredients')
+        fetch('/api/ingredients')
             .then(response => {
                 setIngredients(response.data);
             })
@@ -16,7 +16,7 @@ function AllIngredient() {
 
     const deleteIngredient = async (id) => {
         try {
-            const response = await api.delete(`/api/delete_ingredients/${id}`);
+            const response = await fetch(`/api/delete_ingredients/${id}`);
             if (response.status === 204) { 
                 // Mise à jour de l'état sans refaire une requête au serveur
                 const updatedIngredients = ingredients.filter(ingredient => ingredient.id !== id);
@@ -40,7 +40,7 @@ function AllIngredient() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await api.get(`/api/recherche_ingredient?q=${searchTerm}`);
+            const response = await fetch(`/api/recherche_ingredient?q=${searchTerm}`);
             setIngredients(response.data); // Mettre à jour les produits avec les résultats de la recherche
         } catch (error) {
             console.error('Error searching for ingredient:', error);

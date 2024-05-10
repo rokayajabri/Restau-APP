@@ -1,7 +1,32 @@
 import React from 'react'
-import { Link, Outlet } from 'react-router-dom'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
 
 export default function Layout() {
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            const response = await fetch("http://127.0.0.1:8000/api/logout", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (response.ok) {
+                // Vous pouvez effectuer d'autres actions nécessaires après la déconnexion réussie
+                localStorage.removeItem('authToken'); // Assurez-vous que le nom du token est correctement orthographié
+                navigate('/login');
+                console.log("Logout successful");
+            } else {
+                throw new Error("Logout failed");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            throw error;
+        }
+    };
+
   return (
     <div>
         <header>
@@ -25,9 +50,8 @@ export default function Layout() {
                             <li className="nav-item">
                                 <Link className="nav-link" to="/allIngredient">Ingredient management</Link>
                             </li>
-    
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/logout">Logout</Link>
+                            <li>
+                                <button onClick={handleLogout}>Logout</button>
                             </li>
                            
                         </ul>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { api } from '../config/axios';
 import { useNavigate } from 'react-router-dom';
 
 const EditCategory = () => {
@@ -14,7 +13,7 @@ const EditCategory = () => {
     useEffect(() => {
         const fetchCategory = async () => {
             try {
-                const response = await api.get(`/api/categories/${id}`); // Récupère les détails de la catégorie à modifier
+                const response = await fetch(`/api/categories/${id}`); // Récupère les détails de la catégorie à modifier
                 setFormData(response.data); // Met à jour le formulaire avec les détails de la catégorie
             } catch (error) {
                 console.error('Error fetching category:', error);
@@ -31,7 +30,7 @@ const EditCategory = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await api.put(`/api/edit_categories/${id}`, formData); // Envoie des données modifiées au serveur
+            await fetch(`/api/edit_categories/${id}`, formData); // Envoie des données modifiées au serveur
             console.log('Category updated successfully');
             navigate("/allCategory");
         } catch (error) {

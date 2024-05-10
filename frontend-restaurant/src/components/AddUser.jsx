@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../config/axios';
 
 const AddUser = () => {
     const navigate = useNavigate();
 
-    // Utilisez un objet pour stocker les valeurs de l'état
     const [formData, setFormData] = useState({
-        name:'',
+        name: '',
         email: '',
         password: '',
         password_confirmation: '',
-        role:'',
+        role: '',
     });
 
     const [errors, setErrors] = useState({});
@@ -19,21 +17,27 @@ const AddUser = () => {
     const onSubmit = async (e) => {
         e.preventDefault();
         try {
-            await api.get('/sanctum/csrf-cookie');
-            const response = await api.post('/api/register', formData);
-            console.log(response.status);
-            if (response.status === 200) {
+            const response = await fetch("http://127.0.0.1:8000/api/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
                 navigate("/allUser");
+            } else {
+                const errorData = await response.json();
+                setErrors(errorData.errors);
+                throw new Error("Register failed");
             }
         } catch (error) {
-            console.error('Login failed:', error);
-            // Gérer les erreurs de connexion ici
-            setErrors({ server: 'Login failed. Please try again.' });
+            console.error("Error:", error);
         }
     };
 
     const handleChange = (e) => {
-        // Mettre à jour les valeurs de l'état en fonction de l'ID de l'input
         setFormData({
             ...formData,
             [e.target.id]: e.target.value
@@ -42,7 +46,7 @@ const AddUser = () => {
 
     return (
         <div>
-            <h2>Login</h2>
+            <h2>Add User</h2>
             <form onSubmit={onSubmit}>
                 <div>
                     <label htmlFor="name">Name:</label>
@@ -67,13 +71,14 @@ const AddUser = () => {
                 <div>
                     <label htmlFor="role">Role:</label>
                     <select id="role" value={formData.role} onChange={handleChange}>
-                        <option value="">Select of role</option>
+                        <option value="">Select a role</option>
                         <option value="Admin">Admin</option>
                         <option value="Gerant">Gerant</option>
                         <option value="Cuisinier">Cuisinier</option>
                         <option value="Serveur">Serveur</option>
                         <option value="Caissier">Caissier</option>
                     </select>
+                    {errors.role && <div className="error">{errors.role}</div>}
                 </div>
                 <div>
                     <label htmlFor="password">Password:</label>

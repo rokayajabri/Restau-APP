@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../config/axios';
+
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,7 +13,7 @@ function EditIngredient() {
 
     useEffect(() => {
         // Récupérer les détails de l'ingrédient à mettre à jour
-        api.get(`/api/ingredients/${id}`)
+        fetch(`/api/ingredients/${id}`)
             .then(response => {
                 const ingredient = response.data;
                 setNom(ingredient.nom);
@@ -30,7 +30,7 @@ function EditIngredient() {
         e.preventDefault();
         try {
             // Envoyer une requête PUT pour mettre à jour l'ingrédient
-            const response = await api.put(`/api/edit_ingredients/${id}`, {
+            const response = await fetch(`/api/edit_ingredients/${id}`, {
                 nom,
                 quantite_Stock: quantiteStock,
                 uniteMesure,

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { api } from '../config/axios';
+
 
 const EditUser = () => {
     const { id } = useParams();
@@ -25,7 +25,7 @@ const EditUser = () => {
 
     const fetchUser = async (id) => {
         try {
-            const response = await api.get(`/api/edit_users/${id}`);
+            const response = await fetch(`/api/edit_users/${id}`);
             const userData = response.data;
             // Mettez à jour le formulaire avec les données de l'utilisateur existant
             setFormData(userData);
@@ -40,7 +40,7 @@ const EditUser = () => {
             // Si un ID est présent, il s'agit d'une mise à jour. Sinon, c'est un ajout.
             const url = id ? `/api/edit_users/${id}` : '/api/register';
             const method = id ? 'put' : 'post';
-            const response = await api[method](url, formData);
+            const response = await fetch[method](url, formData);
             if (response.status === 200) {
                 navigate("/allUser");
             }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../config/axios';
+
 import { useNavigate } from 'react-router-dom';
 const AddProduit = () => {
     const navigate = useNavigate();
@@ -15,7 +15,7 @@ const AddProduit = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await api.get('/api/categories');
+                const response = await fetch('/api/categories');
                 setCategories(response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
@@ -32,7 +32,7 @@ const AddProduit = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/api/add_produit', formData);
+            await fetch('/api/add_produit', formData);
             console.log('Produit ajouté avec succès !');
             navigate("/allProduit");
         } catch (error) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../config/axios';
+
 import { Link } from 'react-router-dom';
 
 const AllCategorie = () => {
@@ -8,7 +8,7 @@ const AllCategorie = () => {
 
     const fetchCategories = async () => {
         try {
-            const response = await api.get('/api/categories');
+            const response = await fetch('/api/categories');
             setCategories(response.data);
         } catch (error) {
             console.error('Error fetching categories:', error);
@@ -21,7 +21,7 @@ const AllCategorie = () => {
 
     const deleteCategorie = async (id) => {
         try {
-            const response = await api.delete(`/api/delete_categories/${id}`);
+            const response = await fetch(`/api/delete_categories/${id}`);
             if (response.status === 204) {  // Assurez-vous que le statut attendu est correct
                 // Mise à jour de l'état sans refaire une requête au serveur
                 const updatedCategories = categories.filter(category => category.id !== id);
@@ -41,7 +41,7 @@ const AllCategorie = () => {
      // Fonction pour effectuer une recherche
      const searchCategories = async () => {
         try {
-            const response = await api.get(`/api/recherche_categorie?q=${searchTerm}`);
+            const response = await fetch(`/api/recherche_categorie?q=${searchTerm}`);
             setCategories(response.data);
         } catch (error) {
             console.error('Error searching for categories:', error);

@@ -1,7 +1,5 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
-import PrivateRoute from './components/PrivateRoute';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import Layout from './Layouts/Layout';
@@ -14,18 +12,23 @@ import EditProduit from './components/EditProduit';
 import AllCategorie from './components/AllCategorie';
 import AddCategory from './components/AddCategory';
 import EditCategory from './components/EditCategorie';
-import Logout from './components/Logout';
 import AllIngredient from './components/AllIngredient';
 import AddIngredient from './components/AddIngredient';
 import EditIngredient from './components/EditIngredient';
 
+ const getUserRole = () => {
+    // Implémentez votre logique pour obtenir le rôle de l'utilisateur
+    // Retourne 'admin' ou 'user' pour cet exemple
+    return 'admin';
+  };
 function App() {
+ 
+  const userRole = getUserRole();
   return (
-    <AuthProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={<PrivateRoute />}>
+
             <Route element={<Layout />}>
               <Route index element={<Dashboard />} />
               <Route path="dashboard" element={<Dashboard />} />
@@ -41,13 +44,24 @@ function App() {
               <Route path="allIngredient" element={<AllIngredient />} />
               <Route path="addIngredient" element={<AddIngredient />} />
               <Route path="editIngredient/:id" element={<EditIngredient />} />
-              <Route path="logout" element={<Logout />} />
-              {/* Insérez ici d'autres routes protégées si nécessaire */}
             </Route>
-          </Route>
+            
+
+
+
+            {userRole === 'cuisinier' && (
+            <>
+              {/* Routes pour le cuisinier */}
+            </>
+          )}
+
+          {userRole === 'serveur' && (
+            <>
+              {/* Routes pour le serveur */}
+            </>
+          )}
         </Routes>
       </BrowserRouter>
-    </AuthProvider>
   );
 }
 

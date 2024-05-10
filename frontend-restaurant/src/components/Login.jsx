@@ -1,15 +1,40 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';  // Vérifiez que le chemin est correct
 
 const Login = () => {
     const navigate = useNavigate();
-    const { login } = useAuth();
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
     const [errors, setErrors] = useState({});
+
+    const login = async (email, password) => {
+        try {
+          const response = await fetch("http://127.0.0.1:8000/api/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              email,
+              password,
+            })
+          });
+    
+          if (response.ok) {
+            const userData = await response.json();
+            // Enregistrez l'utilisateur dans le localStorage ou utilisez une autre méthode pour le stocker localement si nécessaire
+            localStorage.setItem('user', JSON.stringify(userData));
+            return userData;
+          } else {
+            throw new Error("Login failed");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          throw error;
+        }
+    };
 
     const onSubmit = async (e) => {
         e.preventDefault();

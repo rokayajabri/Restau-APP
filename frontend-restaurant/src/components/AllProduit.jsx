@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../config/axios';
+
 import { Link } from 'react-router-dom';
 
 const AllProduit = () => {
@@ -9,9 +9,9 @@ const AllProduit = () => {
     
     const fetchProduits = async () => {
         try {
-            const response = await api.get('/api/produits');
+            const response = await fetch('/api/produits');
             setProduits(response.data);
-            const categoriesResponse = await api.get('/api/categories');
+            const categoriesResponse = await fetch('/api/categories');
             setCategories(categoriesResponse.data);
         } catch (error) {
             console.error('Error fetching products:', error);
@@ -25,7 +25,7 @@ const AllProduit = () => {
 
     const deleteProduit = async (id) => {
         try {
-            const response = await api.delete(`/api/delete_produits/${id}`);
+            const response = await fetch(`/api/delete_produits/${id}`);
             if (response.status === 204) {  // Assurez-vous que le statut attendu est correct
                 // Mise à jour de l'état sans refaire une requête au serveur
                 const updatedProduits = produits.filter(produit => produit.id !== id);
@@ -49,7 +49,7 @@ const AllProduit = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await api.get(`/api/recherche_produit?q=${searchTerm}`);
+            const response = await fetch(`/api/recherche_produit?q=${searchTerm}`);
             setProduits(response.data); // Mettre à jour les produits avec les résultats de la recherche
         } catch (error) {
             console.error('Error searching for products:', error);

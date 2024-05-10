@@ -52,11 +52,8 @@ class AuthController extends Controller
         ]);
     }
 
-
-    public function logout(Request $request)
-    {
-        $request->user()->tokens()->delete(); // Supprime tous les jetons d'authentification de l'utilisateur
-        return response()->json(['message' => 'Déconnexion réussie']);
+    public function logout(){
+        return Auth::logout();
     }
 
 }

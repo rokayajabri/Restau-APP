@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { api } from '../config/axios';
+
 import { useNavigate } from 'react-router-dom';
 
 const AddCategory = () => {
@@ -17,7 +17,7 @@ const AddCategory = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/api/add_categories', formData); // Envoie des données du formulaire au serveur
+            await fetch('/api/add_categories', formData); // Envoie des données du formulaire au serveur
             console.log('Category added successfully');
             navigate("/allCategory");
             // Effacer les champs du formulaire après l'ajout de la catégorie

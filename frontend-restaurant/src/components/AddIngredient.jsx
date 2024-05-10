@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { api } from '../config/axios';
+
 import { useNavigate } from 'react-router-dom';
 
 function AddIngredient() {
@@ -12,7 +12,7 @@ function AddIngredient() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await api.post('/api/add_ingredients', {
+            const response = await fetch('/api/add_ingredients', {
                 nom,
                 quantite_Stock: quantiteStock,
                 uniteMesure,
