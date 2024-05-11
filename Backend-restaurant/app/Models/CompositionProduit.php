@@ -15,9 +15,9 @@ class CompositionProduit extends Model
     ];
 
     public function produit(){
-        return $this->belongsTo(Produit::class);
+        return $this->belongsTo(Produit::class,'id_Produit');
     }
     public function ingredient(){
-        return $this->belongsTo(Ingredient::class);
+        return $this->belongsTo(Ingredient::class,'id_Ingredient');
     }
 }

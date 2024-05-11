@@ -79,4 +79,14 @@ Route::group(['middleware'=> ['auth:sanctum']],function(){
     Route::put('/edit_ingredients/{id}', [IngredientController::class, 'update']);
     Route::delete('/delete_ingredients/{id}', [IngredientController::class, 'destroy']);
     Route::get('/recherche_ingredient', [IngredientController::class, 'search']);
+
+
+    // Composition des produits
+    Route::get('/compositions', [CompositionProduitController::class, 'index']);
+    Route::post('/add_composition', [CompositionProduitController::class, 'store']);
+    Route::get('/show_compositions/{id}', [CompositionProduitController::class, 'show']);
+    Route::put('/edit_compositions/{id}', [CompositionProduitController::class, 'update']);   
+    Route::delete('/delete_compositions/{id}', [CompositionProduitController::class, 'destroy']);
+    Route::get('/recherche_composition', [CompositionProduitController::class, 'search']);
+
 });

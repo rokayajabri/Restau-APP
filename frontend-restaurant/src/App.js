@@ -15,6 +15,11 @@ import EditCategory from './components/EditCategorie';
 import AllIngredient from './components/AllIngredient';
 import AddIngredient from './components/AddIngredient';
 import EditIngredient from './components/EditIngredient';
+import AllCompositionProduit from './components/AllCompositionProduit'; 
+
+
+import AddCompositionProduit from './components/AddCompositionProduit'; 
+import EditCompositionProduit from './components/EditCompositionProduit'; 
 
  const getUserRole = () => {
     // Implémentez votre logique pour obtenir le rôle de l'utilisateur
@@ -44,6 +49,11 @@ function App() {
             <Route path="allIngredient" element={<AllIngredient />} />
             <Route path="addIngredient" element={<AddIngredient />} />
             <Route path="editIngredient/:id" element={<EditIngredient />} />
+            <Route path="compositions" element={<AllCompositionProduit />} />
+            <Route path="addCompositionProduit" element={<AddCompositionProduit />} />
+            <Route path="editCompositionProduit/:id" element={<EditCompositionProduit />} /> 
+            
+
           </Route>
         </Route>
 
