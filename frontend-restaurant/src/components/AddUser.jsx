@@ -1,9 +1,10 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const AddUser = () => {
     const navigate = useNavigate();
-
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -17,23 +18,21 @@ const AddUser = () => {
     const onSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(formData)
-            });
+            const userData = JSON.parse(localStorage.getItem("user"));
+            console.log(userData); // Doit être "object"
 
-            if (response.ok) {
-                navigate("/allUser");
-            } else {
-                const errorData = await response.json();
-                setErrors(errorData.errors);
-                throw new Error("Register failed");
-            }
+            const headers = {
+                Authorization: `Bearer ${userData.access_token}`,
+                'Content-Type': 'application/json',
+            };
+    
+            // Set loading state
+            setLoading(true);
+            await axios.post('http://127.0.0.1:8000/api/register', formData,{headers});
+            console.log('User ajouté avec succès !');
+            navigate("/allUser");
         } catch (error) {
-            console.error("Error:", error);
+            console.error('Erreur lors de l\'ajout du user :', error);
         }
     };
 

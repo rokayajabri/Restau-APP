@@ -1,11 +1,23 @@
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 
 import { Link } from 'react-router-dom';
 function AllIngredient() {
     const [ingredients, setIngredients] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
-        fetch('/api/ingredients')
+        const userData = JSON.parse(localStorage.getItem("user"));
+        console.log(userData); // Doit être "object"
+
+        const headers = {
+            Authorization: `Bearer ${userData.access_token}`,
+            'Content-Type': 'application/json',
+        };
+
+        // Set loading state
+        setLoading(true);
+        axios.get('http://127.0.0.1:8000/api/ingredients',{headers})
             .then(response => {
                 setIngredients(response.data);
             })
@@ -16,13 +28,23 @@ function AllIngredient() {
 
     const deleteIngredient = async (id) => {
         try {
-            const response = await fetch(`/api/delete_ingredients/${id}`);
-            if (response.status === 204) { 
-                // Mise à jour de l'état sans refaire une requête au serveur
-                const updatedIngredients = ingredients.filter(ingredient => ingredient.id !== id);
-                setIngredients(updatedIngredients);
-                console.log('ingredient deleted successfully');
-            }
+            const userData = JSON.parse(localStorage.getItem("user"));
+            console.log(userData); // Doit être "object"
+
+            const headers = {
+                Authorization: `Bearer ${userData.access_token}`,
+                'Content-Type': 'application/json',
+            };
+
+            // Set loading state
+            setLoading(true);
+            await axios.delete(`http://127.0.0.1:8000/api/delete_ingredients/${id}`,{headers});
+
+            // Mettre à jour l'état produits en supprimant le produit avec l'ID spécifié
+            setIngredients(ingredients.filter(ingredient => ingredient.id !== id));
+    
+            // Reset loading state
+            setLoading(false);
         } catch (error) {
             console.error('Error deleting ingredient:', error);
         }
@@ -40,13 +62,27 @@ function AllIngredient() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`/api/recherche_ingredient?q=${searchTerm}`);
-            setIngredients(response.data); // Mettre à jour les produits avec les résultats de la recherche
+            const userData = JSON.parse(localStorage.getItem("user"));
+            console.log(userData); // Doit être "object"
+
+            const headers = {
+                Authorization: `Bearer ${userData.access_token}`,
+                'Content-Type': 'application/json',
+            };
+    
+            // Set loading state
+            setLoading(true);
+            const response = await axios.get(`http://127.0.0.1:8000/api/recherche_ingredient?q=${searchTerm}`,{headers});
+            
+            // Mettre à jour l'état produits avec les résultats de la recherche
+            setIngredients(response.data);
+    
+            // Réinitialiser l'état de chargement
+            setLoading(false);
         } catch (error) {
-            console.error('Error searching for ingredient:', error);
+            console.error('Error searching for users:', error);
         }
     };
-
     return (
         <div>
         <h1>Liste des ingrédients</h1>

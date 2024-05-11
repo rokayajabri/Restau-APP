@@ -1,29 +1,33 @@
-import React from 'react'
+import axios from 'axios';
+import { useState } from 'react'
+import React from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 
 export default function Layout() {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const handleLogout = async () => {
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/logout", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
+            const userData = JSON.parse(localStorage.getItem("user"));
+            console.log(userData); // Assurez-vous que userData est bien défini
+    
+            const headers = {
+                Authorization: `Bearer ${userData.access_token}`,
+                'Content-Type': 'application/json',
+            };
 
-            if (response.ok) {
-                // Vous pouvez effectuer d'autres actions nécessaires après la déconnexion réussie
-                localStorage.removeItem('authToken'); // Assurez-vous que le nom du token est correctement orthographié
-                navigate('/login');
-                console.log("Logout successful");
-            } else {
-                throw new Error("Logout failed");
-            }
+            // Set loading state
+            setLoading(true);
+
+            await axios.post("http://127.0.0.1:8000/api/logout", null, { headers });
+
+            localStorage.removeItem('user'); // Assurez-vous que le nom du token est correctement orthographié
+            navigate('/');
+            console.log("Logout successful");
+            setLoading(false);
         } catch (error) {
-            console.error("Error:", error);
-            throw error;
+            console.error('Erreur deconnexion user :', error);
         }
     };
 

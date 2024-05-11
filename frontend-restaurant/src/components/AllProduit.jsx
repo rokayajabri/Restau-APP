@@ -1,41 +1,73 @@
 import React, { useState, useEffect } from 'react';
-
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const AllProduit = () => {
     const [produits, setProduits] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(false);
     
     const fetchProduits = async () => {
         try {
-            const response = await fetch('/api/produits');
+            const userData = JSON.parse(localStorage.getItem("user"));
+            console.log(userData); // Doit être "object"
+
+            const headers = {
+                Authorization: `Bearer ${userData.access_token}`,
+                'Content-Type': 'application/json',
+            };
+    
+            // Set loading state
+            setLoading(true);
+    
+            const response = await axios.get('http://127.0.0.1:8000/api/produits', { headers });
+            
             setProduits(response.data);
-            const categoriesResponse = await fetch('/api/categories');
+    
+            const categoriesResponse = await axios.get('http://127.0.0.1:8000/api/categories', { headers });
+            
             setCategories(categoriesResponse.data);
+            // Reset loading state
+            setLoading(false);
         } catch (error) {
-            console.error('Error fetching products:', error);
+            console.error("Error:", error);
+            // Handle errors (e.g., display error message)
         }
     };
+
     useEffect(() => {
         fetchProduits();
     }, []);
 
 
-
     const deleteProduit = async (id) => {
         try {
-            const response = await fetch(`/api/delete_produits/${id}`);
-            if (response.status === 204) {  // Assurez-vous que le statut attendu est correct
-                // Mise à jour de l'état sans refaire une requête au serveur
-                const updatedProduits = produits.filter(produit => produit.id !== id);
-                setProduits(updatedProduits);
-                console.log('product deleted successfully');
-            }
+            const userData = JSON.parse(localStorage.getItem("user"));
+            console.log(userData); // Assurez-vous que userData est bien défini
+    
+            const headers = {
+                Authorization: `Bearer ${userData.access_token}`,
+                'Content-Type': 'application/json',
+            };
+    
+            // Set loading state
+            setLoading(true);
+    
+            // Effectuer la requête de suppression
+            await axios.delete(`http://127.0.0.1:8000/api/delete_produits/${id}`, { headers });
+    
+            // Mettre à jour l'état produits en supprimant le produit avec l'ID spécifié
+            setProduits(produits.filter(produit => produit.id !== id));
+    
+            // Reset loading state
+            setLoading(false);
         } catch (error) {
-            console.error('Error deleting product:', error);
+            console.error("Error:", error);
+            // Gérer l'erreur (afficher un message d'erreur, etc.)
         }
     };
+    
     const handleDeleteConfirmation = (id) => {
         if (window.confirm('Are you sure you want to delete this product?')) {
             deleteProduit(id);
@@ -49,12 +81,31 @@ const AllProduit = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`/api/recherche_produit?q=${searchTerm}`);
-            setProduits(response.data); // Mettre à jour les produits avec les résultats de la recherche
+            const userData = JSON.parse(localStorage.getItem("user"));
+            console.log(userData); // Assurez-vous que userData est bien défini
+    
+            const headers = {
+                Authorization: `Bearer ${userData.access_token}`,
+                'Content-Type': 'application/json',
+            };
+    
+            // Set loading state
+            setLoading(true);
+    
+            // Effectuer la requête de recherche
+            const response = await axios.get(`http://127.0.0.1:8000/api/recherche_produit?q=${searchTerm}`, { headers });
+    
+            // Mettre à jour l'état produits avec les résultats de la recherche
+            setProduits(response.data);
+    
+            // Réinitialiser l'état de chargement
+            setLoading(false);
         } catch (error) {
-            console.error('Error searching for products:', error);
+            console.error('Error searching for product:', error);
+            // Gérer l'erreur (afficher un message d'erreur, etc.)
         }
     };
+    
 
     const getCategoryName = (categoryId) => {
         const category = categories.find(cat => cat.id === categoryId);

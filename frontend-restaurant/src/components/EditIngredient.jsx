@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 
 import { useParams } from 'react-router-dom';
@@ -10,10 +11,21 @@ function EditIngredient() {
     const [quantiteStock, setQuantiteStock] = useState('');
     const [uniteMesure, setUniteMesure] = useState('');
     const [seuilReapprovisionnement, setSeuilReapprovisionnement] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        const userData = JSON.parse(localStorage.getItem("user"));
+        console.log(userData); // Doit être "object"
+
+        const headers = {
+            Authorization: `Bearer ${userData.access_token}`,
+            'Content-Type': 'application/json',
+        };
+
+        // Set loading state
+        setLoading(true);
         // Récupérer les détails de l'ingrédient à mettre à jour
-        fetch(`/api/ingredients/${id}`)
+        axios.get(`http://127.0.0.1:8000/api/ingredients/${id}`,{headers})
             .then(response => {
                 const ingredient = response.data;
                 setNom(ingredient.nom);
@@ -29,13 +41,23 @@ function EditIngredient() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            const userData = JSON.parse(localStorage.getItem("user"));
+            console.log(userData); // Doit être "object"
+
+            const headers = {
+                Authorization: `Bearer ${userData.access_token}`,
+                'Content-Type': 'application/json',
+            };
+    
+            // Set loading state
+            setLoading(true);
             // Envoyer une requête PUT pour mettre à jour l'ingrédient
-            const response = await fetch(`/api/edit_ingredients/${id}`, {
+            const response = await axios.put(`http://127.0.0.1:8000/api/edit_ingredients/${id}`, {
                 nom,
                 quantite_Stock: quantiteStock,
                 uniteMesure,
                 seuil_Reapprovisionnement: seuilReapprovisionnement
-            });
+            },{headers});
             console.log('Ingredient updated:', response.data);
             navigate("/allIngredient");
         } catch (error) {

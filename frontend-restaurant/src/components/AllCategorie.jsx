@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 
 import { Link } from 'react-router-dom';
@@ -5,11 +6,23 @@ import { Link } from 'react-router-dom';
 const AllCategorie = () => {
     const [categories, setCategories] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-
+    const [loading, setLoading] = useState(false);
     const fetchCategories = async () => {
         try {
-            const response = await fetch('/api/categories');
+            const userData = JSON.parse(localStorage.getItem("user"));
+            console.log(userData); // Doit être "object"
+
+            const headers = {
+                Authorization: `Bearer ${userData.access_token}`,
+                'Content-Type': 'application/json',
+            };
+    
+            // Set loading state
+            setLoading(true);
+            const response = await axios.get('http://127.0.0.1:8000/api/categories',{headers});
             setCategories(response.data);
+             // Reset loading state
+             setLoading(false);
         } catch (error) {
             console.error('Error fetching categories:', error);
         }
@@ -21,15 +34,25 @@ const AllCategorie = () => {
 
     const deleteCategorie = async (id) => {
         try {
-            const response = await fetch(`/api/delete_categories/${id}`);
-            if (response.status === 204) {  // Assurez-vous que le statut attendu est correct
-                // Mise à jour de l'état sans refaire une requête au serveur
-                const updatedCategories = categories.filter(category => category.id !== id);
-                setCategories(updatedCategories);
-                console.log('Category deleted successfully');
-            }
+            const userData = JSON.parse(localStorage.getItem("user"));
+            console.log(userData); // Doit être "object"
+
+            const headers = {
+                Authorization: `Bearer ${userData.access_token}`,
+                'Content-Type': 'application/json',
+            };
+    
+            // Set loading state
+            setLoading(true);
+             await axios.delete(`http://127.0.0.1:8000/api/delete_categories/${id}`, {headers});
+
+              // Mettre à jour l'état produits en supprimant le produit avec l'ID spécifié
+              setCategories(categories.filter(category => category.id !== id));
+    
+              // Reset loading state
+              setLoading(false);
         } catch (error) {
-            console.error('Error deleting category:', error);
+            console.error("Error:", error);
         }
     };
     const handleDeleteConfirmation = (id) => {
@@ -38,15 +61,35 @@ const AllCategorie = () => {
         }
     };
 
-     // Fonction pour effectuer une recherche
-     const searchCategories = async () => {
-        try {
-            const response = await fetch(`/api/recherche_categorie?q=${searchTerm}`);
-            setCategories(response.data);
-        } catch (error) {
-            console.error('Error searching for categories:', error);
-        }
+ // Fonction pour effectuer une recherche
+ const searchCategories = async (e) => {
+    if (e) {
+        e.preventDefault(); // Vérifiez si l'événement e est défini avant d'appeler preventDefault()
+    }
+    try {
+        const userData = JSON.parse(localStorage.getItem("user"));
+        console.log(userData); // Assurez-vous que userData est bien défini
+
+        const headers = {
+            Authorization: `Bearer ${userData.access_token}`,
+            'Content-Type': 'application/json',
+        };
+
+        // Set loading state
+        setLoading(true);
+
+        const response = await axios.get(`http://127.0.0.1:8000/api/recherche_categorie?q=${searchTerm}`, { headers });
+
+        // Mettre à jour l'état categories avec les résultats de la recherche
+        setCategories(response.data);
+
+        // Réinitialiser l'état de chargement
+        setLoading(false);
+    } catch (error) {
+        console.error('Error searching for categories:', error);
+    }
     };
+    
     const handleChange = (e) => {
         setSearchTerm(e.target.value);
     };

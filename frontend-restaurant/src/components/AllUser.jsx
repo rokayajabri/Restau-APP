@@ -1,19 +1,28 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const AllUser = () => {
     const [users, setUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/users");
-            if (response.ok) {
-                const userData = await response.json();
-                setUsers(userData);
-            } else {
-                throw new Error("Failed to fetch users");
-            }
+            const userData = JSON.parse(localStorage.getItem("user"));
+            console.log(userData); // Doit être "object"
+
+            const headers = {
+                Authorization: `Bearer ${userData.access_token}`,
+                'Content-Type': 'application/json',
+            };
+    
+            // Set loading state
+            setLoading(true);
+            const response = await axios.get("http://127.0.0.1:8000/api/users",{headers});
+            setUsers(response.data);
+            // Reset loading state
+            setLoading(false);
         } catch (error) {
             console.error("Error:", error);
         }
@@ -25,18 +34,23 @@ const AllUser = () => {
 
     const deleteUser = async (id) => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/delete_users/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-            });
-            if (response.ok) {
-                setUsers(prevUsers => prevUsers.filter(user => user.id !== id));
-                console.log('User deleted successfully');
-            } else {
-                throw new Error("Failed to delete user");
-            }
+            const userData = JSON.parse(localStorage.getItem("user"));
+            console.log(userData); // Doit être "object"
+
+            const headers = {
+                Authorization: `Bearer ${userData.access_token}`,
+                'Content-Type': 'application/json',
+            };
+    
+            // Set loading state
+            setLoading(true);
+             await axios.delete(`http://127.0.0.1:8000/api/delete_users/${id}`, {headers});
+
+              // Mettre à jour l'état produits en supprimant le produit avec l'ID spécifié
+              setUsers(users.filter(user => user.id !== id));
+    
+              // Reset loading state
+              setLoading(false);
         } catch (error) {
             console.error("Error:", error);
         }
@@ -56,13 +70,23 @@ const AllUser = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/recherche_user?q=${searchTerm}`);
-            if (response.ok) {
-                const searchData = await response.json();
-                setUsers(searchData);
-            } else {
-                throw new Error("Failed to search users");
-            }
+            const userData = JSON.parse(localStorage.getItem("user"));
+            console.log(userData); // Doit être "object"
+
+            const headers = {
+                Authorization: `Bearer ${userData.access_token}`,
+                'Content-Type': 'application/json',
+            };
+    
+            // Set loading state
+            setLoading(true);
+            const response = await axios.get(`http://127.0.0.1:8000/api/recherche_user?q=${searchTerm}`,{headers});
+            
+            // Mettre à jour l'état produits avec les résultats de la recherche
+            setUsers(response.data);
+    
+            // Réinitialiser l'état de chargement
+            setLoading(false);
         } catch (error) {
             console.error('Error searching for users:', error);
         }

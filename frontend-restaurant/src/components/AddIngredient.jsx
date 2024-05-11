@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
@@ -8,16 +9,27 @@ function AddIngredient() {
     const [quantiteStock, setQuantiteStock] = useState('');
     const [uniteMesure, setUniteMesure] = useState('');
     const [seuilReapprovisionnement, setSeuilReapprovisionnement] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('/api/add_ingredients', {
+            const userData = JSON.parse(localStorage.getItem("user"));
+            console.log(userData); // Doit être "object"
+
+            const headers = {
+                Authorization: `Bearer ${userData.access_token}`,
+                'Content-Type': 'application/json',
+            };
+    
+            // Set loading state
+            setLoading(true);
+            const response = await axios.post('http://127.0.0.1:8000/api/add_ingredients', {
                 nom,
                 quantite_Stock: quantiteStock,
                 uniteMesure,
                 seuil_Reapprovisionnement: seuilReapprovisionnement
-            });
+            },{headers});
             console.log('Ingredient added:', response.data);
             // Réinitialiser les champs après l'ajout réussi
             setNom('');

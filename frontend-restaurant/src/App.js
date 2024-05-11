@@ -27,26 +27,28 @@ function App() {
   return (
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<Login />} />
+      
+        <Route path="/">
+        <Route index element={<Login />} />{/* Page de connexion comme page principale */}
+          <Route element={<Layout />}>
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="addUser" element={<AddUser />} />
+            <Route path="editUser/:id" element={<EditUser />} />
+            <Route path="allUser" element={<AllUser />} />
+            <Route path="allProduit" element={<AllProduit />} />
+            <Route path="addProduit" element={<AddProduit />} />
+            <Route path="editProduit/:id" element={<EditProduit />} />
+            <Route path="allCategory" element={<AllCategorie />} />
+            <Route path="addCategory" element={<AddCategory />} />
+            <Route path="editCategory/:id" element={<EditCategory />} />
+            <Route path="allIngredient" element={<AllIngredient />} />
+            <Route path="addIngredient" element={<AddIngredient />} />
+            <Route path="editIngredient/:id" element={<EditIngredient />} />
+          </Route>
+        </Route>
 
-            <Route element={<Layout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="addUser" element={<AddUser />} />
-              <Route path="editUser/:id" element={<EditUser />} />
-              <Route path="allUser" element={<AllUser />} />
-              <Route path="allProduit" element={<AllProduit />} />
-              <Route path="addProduit" element={<AddProduit />} />
-              <Route path="editProduit/:id" element={<EditProduit />} />
-              <Route path="allCategory" element={<AllCategorie />} />
-              <Route path="addCategory" element={<AddCategory />} />
-              <Route path="editCategory/:id" element={<EditCategory />} />
-              <Route path="allIngredient" element={<AllIngredient />} />
-              <Route path="addIngredient" element={<AddIngredient />} />
-              <Route path="editIngredient/:id" element={<EditIngredient />} />
-            </Route>
+
             
-
 
 
             {userRole === 'cuisinier' && (

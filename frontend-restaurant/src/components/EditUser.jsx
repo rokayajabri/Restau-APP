@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -5,7 +6,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 const EditUser = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -16,37 +17,26 @@ const EditUser = () => {
 
     const [errors, setErrors] = useState({});
 
-    useEffect(() => {
-        // Si un ID est présent dans l'URL, récupérez les données de l'utilisateur existant
-        if (id) {
-            fetchUser(id);
-        }
-    }, [id]);
-
-    const fetchUser = async (id) => {
-        try {
-            const response = await fetch(`/api/edit_users/${id}`);
-            const userData = response.data;
-            // Mettez à jour le formulaire avec les données de l'utilisateur existant
-            setFormData(userData);
-        } catch (error) {
-            console.error('Error fetching user:', error);
-        }
-    };
-
-    const onSubmit = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Si un ID est présent, il s'agit d'une mise à jour. Sinon, c'est un ajout.
-            const url = id ? `/api/edit_users/${id}` : '/api/register';
-            const method = id ? 'put' : 'post';
-            const response = await fetch[method](url, formData);
-            if (response.status === 200) {
-                navigate("/allUser");
-            }
+            const userData = JSON.parse(localStorage.getItem("user"));
+                console.log(userData); // Assurez-vous que userData est bien défini
+        
+                const headers = {
+                    Authorization: `Bearer ${userData.access_token}`,
+                    'Content-Type': 'application/json',
+                };
+    
+            // Set loading state
+            setLoading(true);
+
+            await axios.put(`http://127.0.0.1:8000/api/edit_users/${id}`, formData,{headers}); // Envoyer une requête PUT pour mettre à jour les détails du produit
+            console.log('user mis à jour avec succès !');
+            navigate("/allUser");
+            setLoading(false);
         } catch (error) {
-            console.error('Operation failed:', error);
-            setErrors({ server: 'Operation failed. Please try again.' });
+            console.error('Erreur lors de la mise à jour du user :', error);
         }
     };
 
@@ -59,7 +49,7 @@ const EditUser = () => {
 
     return (
         <div>
-           <form onSubmit={onSubmit}>
+           <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="name">Name:</label>
                     <input

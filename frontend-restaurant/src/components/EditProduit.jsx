@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 
 import { useNavigate, useParams } from 'react-router-dom';
@@ -5,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 const EditProduit = () => {
     const navigate = useNavigate();
     const { id } = useParams(); // Récupérer l'ID du produit depuis les paramètres de l'URL
-
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         nom: '',
         description: '',
@@ -18,7 +19,18 @@ const EditProduit = () => {
     useEffect(() => {
         const fetchProduit = async () => {
             try {
-                const response = await fetch(`/api/produits/${id}`); 
+                const userData = JSON.parse(localStorage.getItem("user"));
+                console.log(userData); // Assurez-vous que userData est bien défini
+        
+                const headers = {
+                    Authorization: `Bearer ${userData.access_token}`,
+                    'Content-Type': 'application/json',
+                };
+        
+                // Set loading state
+                setLoading(true);
+
+                const response = await axios.get(`http://127.0.0.1:8000/api/produits/${id}`,{headers}); 
                 const produitData = response.data;
                 setFormData({
                     nom: produitData.nom,
@@ -26,6 +38,7 @@ const EditProduit = () => {
                     prix: produitData.prix,
                     id_Categorie: produitData.id_Categorie,
                 });
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching produit details:', error);
             }
@@ -33,8 +46,20 @@ const EditProduit = () => {
 
         const fetchCategories = async () => {
             try {
-                const response = await fetch('/api/categories');
-                setCategories(response.data);
+                const userData = JSON.parse(localStorage.getItem("user"));
+                console.log(userData); // Assurez-vous que userData est bien défini
+        
+                const headers = {
+                    Authorization: `Bearer ${userData.access_token}`,
+                    'Content-Type': 'application/json',
+                };
+    
+            // Set loading state
+                setLoading(true);
+                const response = await axios.get('http://127.0.0.1:8000/api/categories',{headers});
+                    setCategories(response.data);
+
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching categories:', error);
             }
@@ -51,9 +76,21 @@ const EditProduit = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await fetch(`/api/edit_produits/${id}`, formData); // Envoyer une requête PUT pour mettre à jour les détails du produit
+            const userData = JSON.parse(localStorage.getItem("user"));
+                console.log(userData); // Assurez-vous que userData est bien défini
+        
+                const headers = {
+                    Authorization: `Bearer ${userData.access_token}`,
+                    'Content-Type': 'application/json',
+                };
+    
+            // Set loading state
+            setLoading(true);
+
+            await axios.put(`http://127.0.0.1:8000/api/edit_produits/${id}`, formData,{headers}); // Envoyer une requête PUT pour mettre à jour les détails du produit
             console.log('Produit mis à jour avec succès !');
             navigate("/allProduit");
+            setLoading(false);
         } catch (error) {
             console.error('Erreur lors de la mise à jour du produit :', error);
         }

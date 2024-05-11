@@ -1,8 +1,10 @@
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 const AddProduit = () => {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         nom: '',
         description: '',
@@ -15,7 +17,17 @@ const AddProduit = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await fetch('/api/categories');
+                const userData = JSON.parse(localStorage.getItem("user"));
+                console.log(userData); // Doit être "object"
+    
+                const headers = {
+                    Authorization: `Bearer ${userData.access_token}`,
+                    'Content-Type': 'application/json',
+                };
+        
+                // Set loading state
+                setLoading(true);
+                const response = await axios.get('http://127.0.0.1:8000/api/categories',{headers});
                 setCategories(response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
@@ -32,7 +44,17 @@ const AddProduit = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await fetch('/api/add_produit', formData);
+            const userData = JSON.parse(localStorage.getItem("user"));
+            console.log(userData); // Doit être "object"
+
+            const headers = {
+                Authorization: `Bearer ${userData.access_token}`,
+                'Content-Type': 'application/json',
+            };
+    
+            // Set loading state
+            setLoading(true);
+            await axios.post('http://127.0.0.1:8000/api/add_produit', formData,{headers});
             console.log('Produit ajouté avec succès !');
             navigate("/allProduit");
         } catch (error) {

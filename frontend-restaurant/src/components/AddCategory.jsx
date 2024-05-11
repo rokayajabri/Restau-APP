@@ -1,10 +1,11 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
 const AddCategory = () => {
     const navigate = useNavigate();
-    
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         nom: '',
         description:'',
@@ -17,13 +18,24 @@ const AddCategory = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await fetch('/api/add_categories', formData); // Envoie des données du formulaire au serveur
+            const userData = JSON.parse(localStorage.getItem("user"));
+            console.log(userData); // Doit être "object"
+
+            const headers = {
+                Authorization: `Bearer ${userData.access_token}`,
+                'Content-Type': 'application/json',
+            };
+    
+            // Set loading state
+            setLoading(true);
+            await axios.post('http://127.0.0.1:8000/api/add_categories', formData,{headers}); // Envoie des données du formulaire au serveur
             console.log('Category added successfully');
             navigate("/allCategory");
             // Effacer les champs du formulaire après l'ajout de la catégorie
             setFormData({
                 nom: '',
             });
+
         } catch (error) {
             console.error('Error adding category:', error);
         }
