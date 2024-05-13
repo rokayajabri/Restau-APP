@@ -32,6 +32,8 @@ export default function Layout() {
         } catch (error) {
             console.error('Erreur deconnexion user :', error);
         }
+        console.log(`Token sent: ${userData.access_token}`); // Ajoutez cette ligne pour afficher le token envoyé
+
     };
 
     const renderMenu = () => {

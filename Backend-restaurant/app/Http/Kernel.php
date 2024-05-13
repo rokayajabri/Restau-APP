@@ -69,6 +69,8 @@ class Kernel extends HttpKernel
         'cuisinier' => \App\Http\Middleware\CuisinierMiddleware::class,
         'serveur' => \App\Http\Middleware\ServeurMiddleware::class,
         'caissier' => \App\Http\Middleware\CaissierMiddleware::class,
+        'roles' => \App\Http\Middleware\CheckRole::class,
+
 
     ];
 }

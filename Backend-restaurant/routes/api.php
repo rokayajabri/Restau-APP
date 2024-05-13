@@ -31,7 +31,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // Routes pour les administrateurs
 Route::middleware('auth:sanctum', 'admin')->group(function () {
-
+    
      //Product management
      Route::get('/produits', [ProduitController::class, 'index']);
      Route::delete('/delete_produits/{id}', [ProduitController::class, 'destroy']);
@@ -40,7 +40,7 @@ Route::middleware('auth:sanctum', 'admin')->group(function () {
      Route::get('/recherche_produit', [ProduitController::class, 'recherche']);
 
      //User Management
-     Route::post('/logout', [AuthController::class, 'logout']);
+     
      Route::post('/register', [AuthController::class, 'register']);
      Route::get('/users', [AdminController::class, 'index']);
      Route::put('/edit_users/{id}', [AdminController::class, 'update']);
@@ -87,7 +87,7 @@ Route::middleware('auth:sanctum', 'admin')->group(function () {
     Route::delete('/delete_tables/{id}', [TableController::class, 'destroy']);
     //Route::get('/recherche_table', [CompositionProduitController::class, 'search']);
 
-
+    
 });
 
 // Routes pour les gérants
@@ -102,13 +102,19 @@ Route::middleware('auth:sanctum', 'cuisinier')->group(function () {
 
 // Routes pour les serveurs
 Route::middleware('auth:sanctum', 'serveur')->group(function () {
-
+   
 });
 
 // Routes pour les caissiers
 Route::middleware('auth:sanctum', 'caissier')->group(function () {
 
 });
+
+
+Route::middleware(['auth:sanctum', 'roles:Gerant,Caissier,Admin,Serveur,Cuisinier'])->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+});
+
 
 
     
