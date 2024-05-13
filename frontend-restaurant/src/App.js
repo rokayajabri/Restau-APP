@@ -20,6 +20,9 @@ import CuisinierDashboard from './components/CuisinierPages/CuisinierDashboard';
 import ServeurDashboard from './components/ServeurPages/ServeurDashboard';
 import GerantDashboard from './components/GerantPages/GerantDashboard';
 import CaissierDashboard from './components/CaissierPages/CaissierDashboard';
+import AllCompositionProduit from './components/AdminPages/AllCompositionProduit';
+import AddCompositionProduit from './components/AdminPages/AddCompositionProduit';
+import EditCompositionProduit from './components/AdminPages/EditCompositionProduit';
 
 function App() {
  
@@ -44,6 +47,9 @@ function App() {
               <Route path="allIngredient" element={<AllIngredient />} />
               <Route path="addIngredient" element={<AddIngredient />} />
               <Route path="editIngredient/:id" element={<EditIngredient />} />
+              <Route path="compositions" element={<AllCompositionProduit />} />
+              <Route path="addCompositionProduit" element={<AddCompositionProduit />} />
+              <Route path="editCompositionProduit/:id" element={<EditCompositionProduit />} />
 
               {/* Routes pour le cuisinier */}
               <Route path="cuisinierDashboard" element={<CuisinierDashboard />} />

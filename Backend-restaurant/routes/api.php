@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\CompositionProduitController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\ProduitController;
 use Illuminate\Http\Request;
@@ -51,12 +52,20 @@ Route::middleware('auth:sanctum', 'admin')->group(function () {
      Route::delete('/delete_categories/{id}', [CategorieController::class, 'destroy']);
      Route::get('/recherche_categorie', [CategorieController::class, 'search']);
 
-     //ingredients management
-     Route::get('/ingredients', [IngredientController::class, 'index']);
-     Route::post('/add_ingredients', [IngredientController::class, 'store']);
-     Route::put('/edit_ingredients/{id}', [IngredientController::class, 'update']);
-     Route::delete('/delete_ingredients/{id}', [IngredientController::class, 'destroy']);
-     Route::get('/recherche_ingredient', [IngredientController::class, 'search']);
+    //ingredients management
+    Route::get('/ingredients', [IngredientController::class, 'index']);
+    Route::post('/add_ingredients', [IngredientController::class, 'store']);
+    Route::put('/edit_ingredients/{id}', [IngredientController::class, 'update']);
+    Route::delete('/delete_ingredients/{id}', [IngredientController::class, 'destroy']);
+    Route::get('/recherche_ingredient', [IngredientController::class, 'search']);
+
+    //compositionsProduit management
+    Route::get('/compositions', [CompositionProduitController::class, 'index']);
+    Route::post('/add_composition', [CompositionProduitController::class, 'store']);
+    Route::get('/show_compositions/{id}', [CompositionProduitController::class, 'show']);
+    Route::put('/edit_compositions/{id}', [CompositionProduitController::class, 'update']);
+    Route::delete('/delete_compositions/{id}', [CompositionProduitController::class, 'destroy']);
+    Route::get('/recherche_composition', [CompositionProduitController::class, 'search']);
 });
 
 // Routes pour les gérants
@@ -79,8 +88,3 @@ Route::middleware('auth:sanctum', 'caissier')->group(function () {
 
 });
 
-
-
-Route::group(['middleware'=> ['auth:sanctum']],function(){
-
-});
