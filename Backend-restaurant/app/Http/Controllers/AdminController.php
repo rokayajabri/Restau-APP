@@ -13,6 +13,12 @@ class AdminController extends Controller
         $users = User::all();
         return response()->json($users);
     }
+    public function serveurs()
+    {
+        
+        $serveurs = User::where('role', 'serveur')->get();
+        return response()->json($serveurs);
+    }
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);

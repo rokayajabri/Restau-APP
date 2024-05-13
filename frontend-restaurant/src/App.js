@@ -16,10 +16,11 @@ import AllIngredient from './components/AllIngredient';
 import AddIngredient from './components/AddIngredient';
 import EditIngredient from './components/EditIngredient';
 import AllCompositionProduit from './components/AllCompositionProduit'; 
-
-
 import AddCompositionProduit from './components/AddCompositionProduit'; 
 import EditCompositionProduit from './components/EditCompositionProduit'; 
+import AllCommande from './components/AllCommande';
+import AddCommande from './components/AddCommande';
+import EditCommande from './components/EditCommande';
 
  const getUserRole = () => {
     // Implémentez votre logique pour obtenir le rôle de l'utilisateur
@@ -52,6 +53,9 @@ function App() {
             <Route path="compositions" element={<AllCompositionProduit />} />
             <Route path="addCompositionProduit" element={<AddCompositionProduit />} />
             <Route path="editCompositionProduit/:id" element={<EditCompositionProduit />} /> 
+            <Route path="commandes" element={<AllCommande />} /> 
+            <Route path="addCommande" element={<AddCommande />} />
+            <Route path="editCommande/:id" element={<EditCommande />} /> 
             
 
           </Route>

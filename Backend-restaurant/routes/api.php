@@ -3,9 +3,12 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\CommandeController;
 use App\Http\Controllers\CompositionProduitController;
+use App\Http\Controllers\DetailCommandeController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\ProduitController;
+use App\Http\Controllers\TableController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -65,6 +68,7 @@ Route::group(['middleware'=> ['auth:sanctum']],function(){
     Route::put('/edit_users/{id}', [AdminController::class, 'update']);
     Route::delete('/delete_users/{id}', [AdminController::class, 'destroy']);
     Route::get('/recherche_user', [AdminController::class, 'search']);
+    Route::get('/users/serveurs', [AdminController::class, 'serveurs']);
 
     //Category management
     Route::get('/categories', [CategorieController::class, 'index']);
@@ -80,6 +84,13 @@ Route::group(['middleware'=> ['auth:sanctum']],function(){
     Route::delete('/delete_ingredients/{id}', [IngredientController::class, 'destroy']);
     Route::get('/recherche_ingredient', [IngredientController::class, 'search']);
 
+    //Tables
+    Route::get('/tables', [TableController::class, 'index']);
+    Route::post('/add_table', [TableController::class, 'store']);
+    Route::put('/edit_tables/{id}', [TableController::class, 'update']);
+    Route::delete('/delete_tables/{id}', [TableController::class, 'destroy']);
+    //Route::get('/recherche_table', [CompositionProduitController::class, 'search']);
+
 
     // Composition des produits
     Route::get('/compositions', [CompositionProduitController::class, 'index']);
@@ -88,5 +99,28 @@ Route::group(['middleware'=> ['auth:sanctum']],function(){
     Route::put('/edit_compositions/{id}', [CompositionProduitController::class, 'update']);   
     Route::delete('/delete_compositions/{id}', [CompositionProduitController::class, 'destroy']);
     Route::get('/recherche_composition', [CompositionProduitController::class, 'search']);
+
+    // DetailCommande routes
+    Route::get('/detail_commandes', [DetailCommandeController::class, 'index']);
+    Route::post('/add_detail_commandes', [DetailCommandeController::class, 'store']);
+    Route::get('/show_detail_commandes/{id}', [DetailCommandeController::class, 'show']);
+    Route::put('/edit_detail_commandes/{id}', [DetailCommandeController::class, 'update']);
+    Route::delete('/delete_detail_commandes/{id}', [DetailCommandeController::class, 'destroy']);
+
+
+    Route::get('/commandes', [CommandeController::class, 'index']);
+    Route::post('/add_commande', [CommandeController::class, 'store']);
+    Route::get('/show_commandes/{id}', [CommandeController::class, 'show']);
+    Route::put('/edit_commandes/{id}', [CommandeController::class, 'update']);
+    Route::delete('/delete_commandes/{id}', [CommandeController::class, 'destroy']);
+    //Route::get('/recherche_commande', [CommandeController::class, 'search']);
+
+
+    
+    
+
+
+    
+
 
 });

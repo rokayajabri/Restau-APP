@@ -17,13 +17,15 @@ class Commande extends Model
     ];
 
     public function table(){
-        return $this->belongsTo(Table::class);
+        return $this->belongsTo(Table::class,'id_table');
     }
-    public function user(){
-        return $this->belongsTo(User::class);
+   
+    public function serveur(){
+        return $this->belongsTo(User::class, 'id_serveur');
     }
+    
     public function detailCommande(){
-        return $this->hasMany(DetailCommande::class);
+        return $this->hasMany(DetailCommande::class, 'id_Commande');
     }
     public function facture(){
         return $this->hasMany(Facture::class);
