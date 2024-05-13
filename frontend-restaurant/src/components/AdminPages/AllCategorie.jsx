@@ -105,8 +105,8 @@ const AllCategorie = () => {
             <form onSubmit={handleSubmit}>
                 <input type="text" value={searchTerm} onChange={handleChange} placeholder="Search by name or id" />
                 <button type="submit">Search</button>
-            </form>
-            <table border="1">
+            </form> <br />
+            <table className="table">
                 <thead>
                     <tr>
                         <th>ID</th>

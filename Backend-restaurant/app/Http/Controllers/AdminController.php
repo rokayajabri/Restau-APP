@@ -10,7 +10,7 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        $users = User::all(['id', 'name', 'email', 'password', 'role']);
         return response()->json($users);
     }
     public function update(Request $request, $id)

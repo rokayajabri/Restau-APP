@@ -119,8 +119,8 @@ const AllProduit = () => {
             <form onSubmit={handleSubmit}>
                 <input type="text" value={searchTerm} onChange={handleChange}  placeholder="Search by name or id"/>
                 <button type="submit">Search</button>
-            </form>
-            <table border='1px'>
+            </form><br />
+            <table className="table">
                 <thead>
                     <tr>
                         <th>Id</th>
