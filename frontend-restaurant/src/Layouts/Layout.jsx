@@ -6,6 +6,9 @@ import { Link, Outlet, useNavigate } from 'react-router-dom'
 export default function Layout() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const role = userData.role; 
+    console.log(userData)
 
     const handleLogout = async () => {
         try {
@@ -31,6 +34,83 @@ export default function Layout() {
         }
     };
 
+    const renderMenu = () => {
+        switch (role) {
+          case 'Admin':
+            return (
+              <ul className="navbar-nav">
+                <li className="nav-item">
+                    <Link className="nav-link" to="/AdminDashboard">AdminDashboard</Link>
+                </li>
+                          
+                <li className="nav-item">
+                    <Link className="nav-link" to="/AllUser">User Management</Link>
+                </li>
+                <li className="nav-item">
+                    <Link className="nav-link" to="/AllProduit">Product management</Link>
+                </li>
+                <li className="nav-item">
+                    <Link className="nav-link" to="/allCategory">Category management</Link>
+                </li>
+                <li className="nav-item">
+                    <Link className="nav-link" to="/allIngredient">Ingredient management</Link>
+                </li>
+                <li className="nav-item">
+                    <Link className="nav-link" to="/allIngredient">CompositionProduit management</Link>
+                </li>
+                <li className="nav-item">
+                    <Link className="nav-link" to="/compositions">Composition des Produits</Link>
+                </li>
+                <li className="nav-item">
+                    <Link className="nav-link" to="/commandes"> Commandes</Link>
+                </li>
+              </ul>
+            );
+          case 'Cuisinier':
+            return (
+              <ul className="navbar-nav">
+                 <li className="nav-item">
+                    <Link className="nav-link" to="/CuisinierDashboard">CuisinierDashboard</Link>
+                </li>
+             
+              </ul>
+            );
+
+            case 'Serveur':
+            return (
+              <ul className="navbar-nav">
+                 <li className="nav-item">
+                    <Link className="nav-link" to="/ServeurDashboard">ServeurDashboard</Link>
+                </li>
+             
+              </ul>
+            );
+
+            case 'Gerant':
+              return (
+                <ul className="navbar-nav">
+                   <li className="nav-item">
+                      <Link className="nav-link" to="/GerantDashboard">GerantDashboard</Link>
+                  </li>
+               
+                </ul>
+              );
+            case 'Caissier':
+              return (
+                <ul className="navbar-nav">
+                   <li className="nav-item">
+                      <Link className="nav-link" to="/CaissierDashboard">CaissierDashboard</Link>
+                  </li>
+               
+                </ul>
+              );
+          // Ajoutez des cas pour les autres types d'utilisateurs
+          default:
+            return null;
+        }
+      };
+
+
   return (
     <div>
         <header>
@@ -38,28 +118,8 @@ export default function Layout() {
                 <div className="container-fluid">
                     <div className="collapse navbar-collapse" id="navbarNav">
                         <ul className="navbar-nav">
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/Dashboard">Home Page</Link>
-                            </li>
-                          
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/AllUser">User Management</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/AllProduit">Product management</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/allCategory">Category management</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/allIngredient">Ingredient management</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/compositions">Composition des Produits</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/commandes"> Commandes</Link>
-                            </li>
+                            {renderMenu()}
+
                             <li>
                                 <button onClick={handleLogout}>Logout</button>
                             </li>
@@ -72,6 +132,6 @@ export default function Layout() {
         <main className="container">
             <Outlet/>
         </main>
-    </div>
-  )
+    </div>
+  )
 }

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,27 +10,29 @@ const Login = () => {
     });
     const [errors, setErrors] = useState({});
 
+    const getUserRole = (userData) => {
+        // Supposons que le rôle de l'utilisateur est stocké dans une propriété nommée 'role' des données utilisateur
+        return userData.role;
+    };
+    
     const login = async (email, password) => {
         try {
-          const response = await fetch("http://127.0.0.1:8000/api/login", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              email,
-              password,
-            })
-          });
+          const response = await axios.post("http://127.0.0.1:8000/api/login", {
+            email,
+            password,
+            });
+
+            if (response.status === 200) {
+                const userData = response.data;
+                userData.role = getUserRole(userData);
+                localStorage.setItem('user', JSON.stringify(userData));
+                console.log(userData);
+                return userData;
+               
+            } else {
+                throw new Error("Login failed");
+            }
     
-          if (response.ok) {
-            const userData = await response.json();
-            // Enregistrez l'utilisateur dans le localStorage ou utilisez une autre méthode pour le stocker localement si nécessaire
-            localStorage.setItem('user', JSON.stringify(userData));
-            return userData;
-          } else {
-            throw new Error("Login failed");
-          }
         } catch (error) {
           console.error("Error:", error);
           throw error;
@@ -49,7 +52,29 @@ const Login = () => {
 
         try {
             await login(formData.email, formData.password);
-            navigate("/dashboard");
+            const userData = JSON.parse(localStorage.getItem("user"));
+            switch (userData.role) {
+                case 'Admin':
+                    navigate("/adminDashboard");
+                    break;
+                case 'Cuisinier':
+                    navigate("/cuisinierDashboard");
+                    break;
+                case 'Serveur':
+                    navigate("/serveurDashboard");
+                    break;
+                case 'Gerant':
+                    navigate("/gerantDashboard");
+                    break;
+                case 'Caissier':
+                    navigate("/caissierDashboard");
+                    break;
+                // Ajoutez des cas pour les autres rôles
+                default:
+                    navigate("/"); // Redirection par défaut vers la page d'accueil
+            }
+
+         
         } catch (error) {
             const errorMsg = error.response ? error.response.data.message : 'Login failed. Please try again.';
             setErrors({ ...errors, server: errorMsg });
