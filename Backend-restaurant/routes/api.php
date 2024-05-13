@@ -3,7 +3,6 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategorieController;
-use App\Http\Controllers\CompositionProduitController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\ProduitController;
 use Illuminate\Http\Request;
