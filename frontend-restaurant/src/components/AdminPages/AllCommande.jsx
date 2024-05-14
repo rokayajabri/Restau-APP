@@ -4,7 +4,10 @@ import axios from 'axios';
 
 const AllCommande = () => {
     const [commandes, setCommandes] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
+    const [statut, setStatut] = useState('');
+    const [serveurName, setServeurName] = useState('');
+    const [dateDebut, setDateDebut] = useState('');
+    const [dateFin, setDateFin] = useState('');
     const [loading, setLoading] = useState(false);
 
     const fetchCommandes = async () => {
@@ -37,7 +40,7 @@ const AllCommande = () => {
                     Authorization: `Bearer ${userData.access_token}`,
                     'Content-Type': 'application/json',
                 };
-    
+
                 setLoading(true);
                 await axios.delete(`http://127.0.0.1:8000/api/delete_commandes/${id}`, { headers });
                 setCommandes(prevCommandes => prevCommandes.filter(commande => commande.id !== id));
@@ -47,11 +50,6 @@ const AllCommande = () => {
                 setLoading(false);
             }
         }
-    };
-    
-
-    const handleChange = (e) => {
-        setSearchTerm(e.target.value);
     };
 
     const handleSubmit = async (e) => {
@@ -64,7 +62,15 @@ const AllCommande = () => {
             };
 
             setLoading(true);
-            const response = await axios.get(`http://127.0.0.1:8000/api/recherche_commande?q=${searchTerm}`, { headers });
+            const response = await axios.get('http://127.0.0.1:8000/api/recherche_commande', {
+                headers,
+                params: {
+                    statut,
+                    serveur_name: serveurName,
+                    date_debut: dateDebut,
+                    date_fin: dateFin,
+                },
+            });
             setCommandes(response.data);
             setLoading(false);
         } catch (error) {
@@ -78,11 +84,34 @@ const AllCommande = () => {
             <h2>List of Commandes</h2>
             <Link to="/addCommande">Add Commande</Link>
             <form onSubmit={handleSubmit}>
-                <input type="text" value={searchTerm} onChange={handleChange} placeholder="Search by date or status"/>
+                <input
+                    type="text"
+                    value={statut}
+                    onChange={(e) => setStatut(e.target.value)}
+                    placeholder="Search by statut"
+                />
+                <input
+                    type="text"
+                    value={serveurName}
+                    onChange={(e) => setServeurName(e.target.value)}
+                    placeholder="Search by serveur name"
+                />
+                <input
+                    type="date"
+                    value={dateDebut}
+                    onChange={(e) => setDateDebut(e.target.value)}
+                    placeholder="Search by start date"
+                />
+                <input
+                    type="date"
+                    value={dateFin}
+                    onChange={(e) => setDateFin(e.target.value)}
+                    placeholder="Search by end date"
+                />
                 <button type="submit">Search</button>
             </form>
             {loading ? <p>Loading...</p> : (
-                <table border='1px'>
+                <table border="1px">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -95,23 +124,20 @@ const AllCommande = () => {
                         </tr>
                     </thead>
                     <tbody>
-                    {commandes.map(commande => (
-    <tr key={commande.id}>
-    <td>{commande.id}</td>
-    <td>{commande.dateCmd}</td>
-    <td>{commande.serveur ? commande.serveur.name : 'Unassigned'}</td>
-    <td>{commande.table ? `Table ${commande.table.id}` : 'No Table'}</td>
-    <td>{commande.statut}</td>
-    <td>{parseFloat(commande.total).toFixed(2)}</td>
-    <td>
-        <Link to={`/editCommande/${commande.id}`}>Edit</Link>
-        <button onClick={() => handleDelete(commande.id)}>Delete</button>
-    </td>
-</tr>
-
-))}
-
-
+                        {commandes.map(commande => (
+                            <tr key={commande.id}>
+                                <td>{commande.id}</td>
+                                <td>{commande.dateCmd}</td>
+                                <td>{commande.serveur ? commande.serveur.name : 'Unassigned'}</td>
+                                <td>{commande.table ? `Table ${commande.table.id}` : 'No Table'}</td>
+                                <td>{commande.statut}</td>
+                                <td>{parseFloat(commande.total).toFixed(2)}</td>
+                                <td>
+                                    <Link to={`/editCommande/${commande.id}`}>Edit</Link>
+                                    <button onClick={() => handleDelete(commande.id)}>Delete</button>
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             )}

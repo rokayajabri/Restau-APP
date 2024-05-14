@@ -72,6 +72,7 @@ class CommandeController extends Controller
     public function show($id)
     {
         $commande = Commande::with(['table', 'serveur', 'detailCommande.produit'])->find($id);
+        // $commande = Commande::all()->where("id",$id);
       
 
         if (!$commande) {
@@ -131,6 +132,36 @@ class CommandeController extends Controller
         }
     }
     
+    public function search(Request $request)
+    {
+        try {
+            $query = Commande::with(['serveur', 'table', 'detailCommande.produit']);
+    
+            if ($request->filled('statut')) {
+                $query->where('statut', $request->statut);
+            }
+    
+            if ($request->filled('serveur_name')) {
+                $query->whereHas('serveur', function ($q) use ($request) {
+                    $q->where('name', 'LIKE', '%' . $request->serveur_name . '%');
+                });
+            }
+    
+            if ($request->filled('date_debut') && $request->filled('date_fin')) {
+                $query->whereBetween('dateCmd', [$request->date_debut, $request->date_fin]);
+            }
+    
+            $commandes = $query->get();
+    
+            return response()->json($commandes);
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la recherche des commandes: " . $e->getMessage());
+            return response()->json(['error' => 'Erreur serveur interne'], 500);
+        }
+    }
+    
+
+
 
     public function destroy($id)
 {
