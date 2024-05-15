@@ -58,13 +58,13 @@ export default function Layout() {
                     <Link className="nav-link" to="/allIngredient">Ingredient management</Link>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link" to="/allIngredient">CompositionProduit management</Link>
+                    <Link className="nav-link" to="/compositions">CompositionProduits management</Link>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link" to="/compositions">Composition des Produits</Link>
+                    <Link className="nav-link" to="/commandes"> Commandes management</Link>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link" to="/commandes"> Commandes</Link>
+                    <Link className="nav-link" to="/factures"> Factures management</Link>
                 </li>
               </ul>
             );

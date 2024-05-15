@@ -26,6 +26,9 @@ import EditCompositionProduit from './components/AdminPages/EditCompositionProdu
 import AllCommande from './components/AdminPages/AllCommande';
 import AddCommande from './components/AdminPages/AddCommande';
 import EditCommande from './components/AdminPages/EditCommande';
+import AllFacture from './components/AdminPages/AllFacture';
+import AddFacture from './components/AdminPages/AddFacture';
+import EditFacture from './components/AdminPages/EditFacture';
 
 
 function App() {
@@ -57,6 +60,9 @@ function App() {
               <Route path="commandes" element={<AllCommande />} /> 
               <Route path="addCommande" element={<AddCommande />} />
               <Route path="editCommande/:id" element={<EditCommande />} /> 
+              <Route path="factures" element={<AllFacture />} /> 
+              <Route path="addFacture" element={<AddFacture />} />
+              <Route path="editFacture/:id" element={<EditFacture />} />
 
               {/* Routes pour le cuisinier */}
               <Route path="cuisinierDashboard" element={<CuisinierDashboard />} />

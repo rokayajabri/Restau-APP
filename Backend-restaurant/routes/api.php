@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\CommandeController;
 use App\Http\Controllers\CompositionProduitController;
+use App\Http\Controllers\FactureController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\TableController;
@@ -31,7 +32,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // Routes pour les administrateurs
 Route::middleware('auth:sanctum', 'admin')->group(function () {
-    
+
      //Product management
      Route::get('/produits', [ProduitController::class, 'index']);
      Route::delete('/delete_produits/{id}', [ProduitController::class, 'destroy']);
@@ -40,7 +41,7 @@ Route::middleware('auth:sanctum', 'admin')->group(function () {
      Route::get('/recherche_produit', [ProduitController::class, 'recherche']);
 
      //User Management
-     
+
      Route::post('/register', [AuthController::class, 'register']);
      Route::get('/users', [AdminController::class, 'index']);
      Route::put('/edit_users/{id}', [AdminController::class, 'update']);
@@ -80,14 +81,21 @@ Route::middleware('auth:sanctum', 'admin')->group(function () {
     //Route::get('/recherche_commande', [CommandeController::class, 'search']);
 
 
-    // Tables
+    // Tables management
     Route::get('/tables', [TableController::class, 'index']);
     Route::post('/add_table', [TableController::class, 'store']);
     Route::put('/edit_tables/{id}', [TableController::class, 'update']);
     Route::delete('/delete_tables/{id}', [TableController::class, 'destroy']);
     //Route::get('/recherche_table', [CompositionProduitController::class, 'search']);
 
-    
+    //factures management
+    Route::get('/factures', [FactureController::class, 'getAllFactures']);
+    Route::post('/add_facture', [FactureController::class, 'ajouterFacture']);
+    Route::delete('/delete_facture/{id}', [FactureController::class, 'destroy']);
+    Route::get('/recherche_facture', [FactureController::class, 'search']);
+    Route::put('/edit_facture/{id}', [FactureController::class, 'update']);
+
+
 });
 
 // Routes pour les gérants
@@ -102,7 +110,7 @@ Route::middleware('auth:sanctum', 'cuisinier')->group(function () {
 
 // Routes pour les serveurs
 Route::middleware('auth:sanctum', 'serveur')->group(function () {
-   
+
 });
 
 // Routes pour les caissiers
@@ -117,11 +125,11 @@ Route::middleware(['auth:sanctum', 'roles:Gerant,Caissier,Admin,Serveur,Cuisinie
 
 
 
-    
-    
 
 
-    
+
+
+
 
 
 
