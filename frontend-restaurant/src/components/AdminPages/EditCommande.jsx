@@ -11,14 +11,13 @@ const EditCommande = () => {
         id_serveur: '',
         id_table: '',
         statut: '',
-        total: '',
-        details: []
+        total: 0,
+        detail_commande: [] 
     });
     const [serveurs, setServeurs] = useState([]);
     const [tables, setTables] = useState([]);
     const [produits, setProduits] = useState([]);
 
-   
     useEffect(() => {
         const fetchCommandeDetails = async () => {
             try {
@@ -29,35 +28,19 @@ const EditCommande = () => {
                 };
     
                 setLoading(true);
-                const [commandeRes, serveursRes, tablesRes, produitsRes] = await Promise.all([
-                    axios.get(`http://127.0.0.1:8000/api/show_commandes/${id}`, { headers }),
+                const [serveursRes, tablesRes, produitsRes] = await Promise.all([
                     axios.get('http://127.0.0.1:8000/api/users/serveurs', { headers }),
                     axios.get('http://127.0.0.1:8000/api/tables', { headers }),
                     axios.get('http://127.0.0.1:8000/api/produits', { headers })
                 ]);
+                const commandeRes = await axios.get(`http://127.0.0.1:8000/api/show_commandes/${id}`, { headers });
+                setFormData(commandeRes.data);
                 setLoading(false);
 
                 setServeurs(serveursRes.data);
                 setTables(tablesRes.data);
                 setProduits(produitsRes.data);
 
-                if (commandeRes.data) {
-                    const { dateCmd, serveur, table, statut, total, detailCommande } = commandeRes.data;
-                    setFormData({
-                        dateCmd: dateCmd || '',
-                        id_serveur: serveur ? serveur.id : '',
-                        id_table: table ? table.id : '',
-                        statut: statut || '',
-                        total: total || '',
-                        details: detailCommande ? detailCommande.map(dc => ({
-                            id: dc.id,
-                            id_Produit: dc.produit ? dc.produit.id : 'Produit inconnu',
-                            quantite: dc.quantite,
-                            prix_un: dc.prix_un
-                        })) : []
-                    });
-                    console.log('Commande loaded:', commandeRes.data);
-                }
             } catch (error) {
                 console.error('Error fetching commande details:', error);
                 setLoading(false);
@@ -78,10 +61,43 @@ const EditCommande = () => {
                 quantite: 1,
                 prix_un: produits[0].prix
             };
-            setFormData({ ...formData, details: [...formData.details, newDetail] });
+            setFormData({ ...formData, detail_commande: [...formData.detail_commande, newDetail] });
+            recalculateTotal([...formData.detail_commande, newDetail]);
         } else {
             console.error('No products available');
         }
+    };
+
+    const handleDetailChange = (index, field, value) => {
+        const updatedDetails = [...formData.detail_commande];
+        updatedDetails[index][field] = value;
+
+        if (field === 'id_Produit') {
+            const selectedProduct = produits.find(produit => produit.id === parseInt(value));
+            if (selectedProduct) {
+                updatedDetails[index].prix_un = selectedProduct.prix;
+            }
+        }
+
+        setFormData({ ...formData, detail_commande: updatedDetails });
+        
+        // Recalculate total when the quantity, price, or product changes
+        if (field === 'quantite' || field === 'prix_un' || field === 'id_Produit') {
+            recalculateTotal(updatedDetails);
+        }
+    };
+
+    const recalculateTotal = (details) => {
+        const total = details.reduce((sum, detail) => {
+            return sum + (detail.quantite * detail.prix_un);
+        }, 0);
+        setFormData(prevFormData => ({ ...prevFormData, total }));
+    };
+
+    const removeDetail = (index) => {
+        const updatedDetails = formData.detail_commande.filter((_, idx) => idx !== index);
+        setFormData({ ...formData, detail_commande: updatedDetails });
+        recalculateTotal(updatedDetails);
     };
 
     const handleSubmit = async (e) => {
@@ -99,11 +115,11 @@ const EditCommande = () => {
                 id_table: formData.id_table,
                 statut: formData.statut,
                 total: formData.total,
-                details: formData.details.map(detail => ({
-                    id: detail.id,
-                    id_Produit: detail.id_Produit,
-                    quantite: detail.quantite,
-                    prix_un: detail.prix_un
+                details: formData.detail_commande.map(detail_commande => ({
+                    id: detail_commande.id,
+                    id_Produit: detail_commande.id_Produit,
+                    quantite: detail_commande.quantite,
+                    prix_un: detail_commande.prix_un
                 }))
             };
             console.log('Data to send:', dataToSend); // Logging to see what is being sent
@@ -118,20 +134,12 @@ const EditCommande = () => {
         }
     };
 
-    const handleDetailChange = (index, field, value) => {
-        const updatedDetails = [...formData.details];
-        updatedDetails[index][field] = value;
-        setFormData({ ...formData, details: updatedDetails });
-    };
-
-    const removeDetail = (index) => {
-        const updatedDetails = formData.details.filter((_, idx) => idx !== index);
-        setFormData({ ...formData, details: updatedDetails });
-    };
-
     return (
         <div>
+            {console.log("body:", formData.detail_commande)}
+
             <h2>Edit Commande</h2>
+
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="dateCmd">Date et Heure:</label>
@@ -170,18 +178,22 @@ const EditCommande = () => {
                 </div>
                 <div>
                     <h4>Détails de la commande</h4>
-                    {formData.details.map((detail, index) => (
-                        <div key={index}>
-                            <select name="id_Produit" value={detail.id_Produit} onChange={(e) => handleDetailChange(index, 'id_Produit', e.target.value)}>
-                                {produits.map(produit => (
-                                    <option key={produit.id} value={produit.id}>{produit.nom}</option>
-                                ))}
-                            </select>
-                            <input type="number" name="quantite" value={detail.quantite} onChange={(e) => handleDetailChange(index, 'quantite', e.target.value)} />
-                            <input type="number" name="prix_un" value={detail.prix_un} onChange={(e) => handleDetailChange(index, 'prix_un', e.target.value)} />
-                            <button type="button" onClick={() => removeDetail(index)}>Retirer</button>
-                        </div>
-                    ))}
+                    {formData.detail_commande && formData.detail_commande.length > 0 ? (
+                        formData.detail_commande.map((detail, index) => (
+                            <div key={index}>
+                                <select name="id_Produit" value={detail.id_Produit} onChange={(e) => handleDetailChange(index, 'id_Produit', e.target.value)}>
+                                    {produits.map(produit => (
+                                        <option key={produit.id} value={produit.id}>{produit.nom}</option>
+                                    ))}
+                                </select>
+                                <input type="number" name="quantite" value={detail.quantite} onChange={(e) => handleDetailChange(index, 'quantite', e.target.value)} />
+                                <input type="number" name="prix_un" value={detail.prix_un} onChange={(e) => handleDetailChange(index, 'prix_un', e.target.value)} />
+                                <button type="button" onClick={() => removeDetail(index)}>Retirer</button>
+                            </div>
+                        ))
+                    ) : (
+                        <p>Aucun détail de commande</p>
+                    )}
                     <button type="button" onClick={addDetail}>Ajouter Détail</button>
                 </div>
                 <button type="submit">Mettre à jour la commande</button>

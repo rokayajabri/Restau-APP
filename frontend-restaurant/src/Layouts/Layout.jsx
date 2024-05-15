@@ -60,6 +60,7 @@ export default function Layout() {
                 <li className="nav-item">
                     <Link className="nav-link" to="/compositions">CompositionProduits management</Link>
                 </li>
+               
                 <li className="nav-item">
                     <Link className="nav-link" to="/commandes"> Commandes management</Link>
                 </li>

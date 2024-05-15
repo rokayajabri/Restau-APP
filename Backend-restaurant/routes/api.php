@@ -78,7 +78,7 @@ Route::middleware('auth:sanctum', 'admin')->group(function () {
     Route::get('/show_commandes/{id}', [CommandeController::class, 'show']);
     Route::put('/edit_commandes/{id}', [CommandeController::class, 'update']);
     Route::delete('/delete_commandes/{id}', [CommandeController::class, 'destroy']);
-    //Route::get('/recherche_commande', [CommandeController::class, 'search']);
+    Route::get('/recherche_commande', [CommandeController::class, 'search']);
 
 
     // Tables management
